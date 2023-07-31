@@ -30,7 +30,7 @@ export class AggregatedPart {
   // myArrow: pricingResponse[i].urlData[j].type == "Image Small"
   // tti: parts[i].imageURL
   specifications: JSON; // part name collection of specifications if any, [] if none
-  // myArrow: parts[i].euRohs, 
+  // euRohs, 
   // chinaRohs, 
   // lifeCycleStatus, 
   // exportControlClassificationNumberUS, 
@@ -39,8 +39,9 @@ export class AggregatedPart {
   // taxonomy
   // partClassification
   // SVHC.shcOverThreshold
+  // countryOfOrigin
 
-  // tti: myArrow: parts[i].partNCNR
+  // tti: parts[i].partNCNR
   // hts
   // category
   // exportInformation

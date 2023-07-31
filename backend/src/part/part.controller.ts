@@ -8,6 +8,6 @@ export class PartController {
 
   @Get(":partNumber")
   async getPart(@Param("partNumber") partNumber : string): Promise<AggregatedPart> {
-    return await this.partService.getPart(partNumber);
+    return this.partService.getPart(partNumber);
   }
 }

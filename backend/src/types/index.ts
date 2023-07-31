@@ -1,3 +1,5 @@
+import { SUPPLIER_NAMES } from "src/helpers/constants";
+
 export class AggregatedPart {
   name: string; // part name
   description: string; // part description
@@ -42,6 +44,9 @@ export class TTIPartResponse {
   recordCount: number;
 }
 
+// fields labelled "specification" are related to
+// the part itself, found on that respective manufacturers
+// product page
 export class TTIPart {
     ttiPartNumber: string;
     manufacturerPartNumber: string;
@@ -49,7 +54,7 @@ export class TTIPart {
     manufacturer: string;
     salesMinimum: number;
     salesMultiple: number;
-    partSearchId: string;
+    partSearchId?: string;
     availableToSell: number;
     buyUrl: string;
     datasheetURL: string;
@@ -58,20 +63,21 @@ export class TTIPart {
     packaging: string;
     leadTime: string;
     partNCNR: string;
-    hts: string;
-    category: string;
+    hts: string; //specification, only used if no arrow data, redundant
+    category: string; // specification, what type of product this is
     imageURL: string;
     exportInformation: {
-        eccn: string,
-        hts: string,
+        eccn: string, //specification, export info
+        hts: string, //specification, export info (redundant with hts field)
+        taric?: string, //specification, export info
     };
     environmentalInformation: {
-        rohsStatus: string;
-        leadInTerminals: string;
-        reachSVHC: string;
-        reachSubstanceName: string;
+        rohsStatus: string; //specification, environmental info (only used if no arrow data, redundant)
+        leadInTerminals: string; //specification, environmental info (Pb the element)
+        reachSVHC: string; //specification, environmental info (only used if no arrow data, redundant)
+        reachSubstanceName: string; //specification, environmental info 
     };
-    roHsStatus: string;
+    roHsStatus: string; //specification, environmental info, redundant with other fields and arrow data
 }
 export class TTIPricing {
   vipPrice: string;
@@ -93,15 +99,18 @@ export class ArrowPartResponse {
   pricingResponse: ArrowPart[]
 }
 
+// fields labelled "specification" are related to
+// the part itself, found on that respective manufacturers
+// product page
 export class ArrowPart {
   itemId: number;
   warehouseId: number;
   warehouseCode: string;
-  arrowReel: false;
+  arrowReel: boolean;
   responseState: string;
   currency: string;
   documentId: string;
-  resalePrice: string;
+  resalePrice?: string;
   fohQuantity: string;
   description: string;
   partNumber: string;
@@ -112,12 +121,12 @@ export class ArrowPart {
   manufacturer: string;
   mfrCode: string;
   supplier: string;
-  htsCode: string;
-  pkg: string;
+  htsCode: string; // specification
+  pkg: string; // listed in specification but information already covered by packaging in AggregatedPart
   spq: number;
-  pricingTier: ArrowPricingTier[];
+  pricingTier?: ArrowPricingTier[];
   urlData: ArrowUrlData[];
-  leadTime: {
+  leadTime?: {
       supplierLeadTime: number,
       supplierLeadTimeDate: string,
       arrowLeadTime: number,
@@ -125,21 +134,23 @@ export class ArrowPart {
   arwPartNum: ArrowPartNum;
   suppPartNum: ArrowPartNum;
   bufferQuantity: number
-  euRohs: string;
-  chinaRohs: string;
+  euRohs: string; //specification
+  chinaRohs: string; //specification
   quotable: boolean;
   purchasable: boolean;
   arrowInitiated: boolean;
   nonCancelableNonReturnable: boolean;
   taxonomy: string;
-  partClassification: string;
+  partClassification: string; //specification
   partBuyCurrency: string;
-  exportControlClassificationNumberUS: string;
-  exportControlClassificationNumberWAS: string;
+  exportControlClassificationNumberUS: string; //specification
+  exportControlClassificationNumberWAS: string; //specification
   lifeCycleStatus: string;
+  countryOfOrigin?: string; // specification
+  dateCode?: string; // specification (date manufactured)
   franchised: string;
   SVHC: {
-      svhcOverThreshold: string,
+      svhcOverThreshold: string, //specification (different than rohs)
   };
 }
 export class ArrowPricingTier {
@@ -155,7 +166,58 @@ export class ArrowPartNum {
   isExactMatch: boolean;
   name: string;
 }
-export class PartResponse {
-  response: TTIPartResponse | ArrowPartResponse;
-  supplier: SupplierName;
+// Cannot use value from constants because typescript doesnt 
+// like computed properties as keys
+// also cant 
+export class PartResponses {
+  "TTI"?: TTIPartResponse;
+  "Arrow"?: ArrowPartResponse;
+}
+export type PartResponse = TTIPartResponse | ArrowPartResponse
+export type Part = TTIPart | ArrowPart
+export type Tier = TTIPricingBreak | ArrowPricingTier
+ // For the "specifications" field, I have picked the data fields from the 
+// data files and identified which ones represent specifications present in 
+// either but page's "technical specification table"
+// I interpreted the type constraint "JSON" to simply mean any generic object
+// meant to be ambiguous so the coder would have to figure out which data fields
+// to include, INSTEAD of it being a type class that implements JSON
+// Which is rather meaningless as a return type since the JSON type does not contain any data
+// but instead just defines functions, which are not serizable itself into JSON
+export class PartSpecifications {
+  htsCode?: string;
+  euRohs?: string;
+  rohsStatus?: string;
+  chinaRohs?: string;
+  partClassification?: string;
+  exportControlClassificationNumberUS?: string;
+  exportControlClassificationNumberWAS?: string;
+  countryOfOrigin?: string;
+  dateCode?: string;
+  SVHC?: string;
+  category?: string;
+  eccn?: string;
+  taric?: string;
+  leadInTerminals?: string;
+  reachSubstanceName?: string
+}
+export class PartialAggregatedPart {
+  name?: string;
+  description?: string;
+  totalStock?: number;
+  manufacturerLeadTime?: number;
+  manufacturerName?: string;
+  packaging?: Set<Packaging>;
+  productDoc?: string;
+  productUrl?: string;
+  productImageUrl?: string;
+  specifications?: PartSpecifications;
+  sourcePart: SupplierName;
+}
+
+export interface PartAggregator<PartResponse> {
+  partsResponse: PartResponse
+  aggregatePartResponse(partNumber:string):PartialAggregatedPart;
+  buildPackaging(part:Part):Packaging
+  buildPricing(tiers:Tier[]):PriceBreak[]
 }

@@ -21,5 +21,6 @@
       "@types": ["./src/types/"]
     },
     "resolveJsonModule": true,
+    "esModuleInterop": true,
   }
 }

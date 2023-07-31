@@ -1,23 +1,20 @@
 import { HttpStatus } from "@nestjs/common"
-import myArrowJson from "./myarrow.json"
-import { ArrowPart, ArrowPartResponse } from "src/types"
+import myArrowJson from "../data/myarrow.json"
+import { ArrowPartResponse } from "src/types"
 export default class MyArrowAPI {
-    partData = {
-        "0510210200": myArrowJson.pricingResponse
+    partData:{
+        [k:string]: ArrowPartResponse
+    } 
+    constructor(){
+        this.partData = {
+            "0510210200": myArrowJson as ArrowPartResponse
+        }
     }
     getPart(partNumber : string) : Promise<ArrowPartResponse> {
         return new Promise<ArrowPartResponse>((resolve, reject) => {
-            const part:[ArrowPart]|undefined = this.partData[partNumber] || undefined
-            if (part !== undefined) {
-                return resolve({
-                    status: myArrowJson.status,
-                    requestedQuantity: myArrowJson.requestedQuantity,
-                    results: myArrowJson.results,
-                    pages: myArrowJson.pages,
-                    totalRecords: myArrowJson.totalRecords,
-                    currentPage: myArrowJson.currentPage,
-                    pricingResponse: part,
-                })
+            const partResponse:ArrowPartResponse|undefined = this.partData[partNumber] || undefined
+            if (partResponse !== undefined) {
+                return resolve(partResponse)
             } else {
                 return reject({
                     statusCode: HttpStatus.NOT_FOUND,
