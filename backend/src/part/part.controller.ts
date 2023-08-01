@@ -1,14 +1,14 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { PartService } from './part.service';
 import { AggregatedPart } from 'src/types';
 
-@Controller('parts')
+@Controller('part')
 export class PartController {
   constructor(private readonly partService: PartService) {}
 
-  @Get(':partNumber')
+  @Get()
   async getPart(
-    @Param('partNumber') partNumber: string,
+    @Query('partNumber') partNumber: string,
   ): Promise<AggregatedPart> {
     return this.partService.getPart(partNumber);
   }

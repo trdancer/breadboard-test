@@ -12,7 +12,7 @@ export const getPart = (partNumber:string) => {
             partNumber,
         }))
         try {
-            const url = `${apiUrl}/parts/${partNumber}`
+            const url = `${apiUrl}/part?partNumber=${partNumber}`
             const response = await axios.get(url)
             const part = response.data
             dispatch(getPartSuccess({part}))
