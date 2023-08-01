@@ -25,7 +25,6 @@ export const parseLeadTimeDays = (leadTime: string): number => {
       return 365 * amount;
     // If no measure is specified, assume weeks
     default:
-      console.log('found default');
       return 7 * amount;
   }
 };
