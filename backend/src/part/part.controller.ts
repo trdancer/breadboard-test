@@ -6,7 +6,7 @@ import { AggregatedPart } from 'src/types';
 export class PartController {
   constructor(private readonly partService: PartService) {}
 
-  @Get()
+  @Get('/')
   async getPart(
     @Query('partNumber') partNumber: string,
   ): Promise<AggregatedPart> {
