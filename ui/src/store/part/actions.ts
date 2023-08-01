@@ -19,12 +19,22 @@ export const getPart = (partNumber:string) => {
             return
         } catch(err:any) {
             const axError:AxiosError = err
-            dispatch(getPartFailure({
-                error: {
-                    code: axError.code,
-                    message: (axError.response?.data as any).error || axError.message,
-                }
-            }))
+            if (axError.response) {
+                dispatch(getPartFailure({
+                    error: {
+                        code: axError.code,
+                        message: (axError.response?.data as any).error || axError.message,
+                    }
+                }))
+            }
+            else {
+                dispatch(getPartFailure({
+                    error: {
+                        code: 500,
+                        message: "Error connecting to Server"
+                    }
+                }))
+            }
         }
     }
 }

@@ -1,3 +1,8 @@
+body {
+  min-height: 100vh;
+  background: rgb(238,238,238);
+  background: linear-gradient(149deg, rgba(238,238,238,1) 0%, rgba(251,167,152,1) 49%, rgba(144,143,249,1) 100%);
+}
 .App {
   text-align: center;
 }

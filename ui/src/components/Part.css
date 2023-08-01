@@ -1,0 +1,16 @@
+#Part {
+    padding: 50px;
+    min-width: 50vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.part-search {
+    width: 50%;
+    flex-basis: 100%;
+    margin-bottom: 10px;
+}
+.supplier-tag {
+    padding: 7px;
+
+}
