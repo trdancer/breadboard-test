@@ -25,7 +25,6 @@ function Part() {
         allowClear
         enterButton
         onSearch={(partNum) => {
-          console.log('searched')
           dispatch(getPart(partNum))
         }}
       >
